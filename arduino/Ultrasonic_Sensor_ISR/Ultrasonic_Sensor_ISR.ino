@@ -61,7 +61,7 @@ void setup() {
   // COM1A1, COM1A0: 01 -> Toggle
   TCCR5A &= ~(1<<COM5A1);
   TCCR5A |= (1<<COM5A0);
-  // 256 prescaling CS12, CS11, CS10 100
+  // 256 prescaling CS52, CS51, CS50 100
   TCCR5B |= (1<<CS52);
   TCCR5B &= ~((1<<CS50) | (1<<CS51));
   TCNT5 = 0;
