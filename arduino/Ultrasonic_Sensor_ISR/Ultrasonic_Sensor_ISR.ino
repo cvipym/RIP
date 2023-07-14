@@ -14,7 +14,7 @@
 //      PD0()                       Echo
 //      GND                         GND
 //---------------------------------------------------------------------------------
-// 작성자: 12181519 이영민, 
+// 작성자: 12181519 이영민
 
 volatile unsigned char echo = 0; // echo signal
 volatile unsigned int start_pos = 0;
@@ -22,7 +22,7 @@ volatile unsigned int end_pos = 0;
 volatile unsigned int dist = 0;
 
 
-ISR(TIMER1_COMPA_vect){
+ISR(TIMER5_COMPA_vect){
   PORTF |= 0x01;
   _delay_us(10);
   PORTF &= ~0x01; // Transmit triger 10us pulse
@@ -34,11 +34,11 @@ ISR(TIMER1_COMPA_vect){
 ISR(INT0_vect){
   switch(echo){
     case 0:
-      start_pos = TCNT1;
+      start_pos = TCNT5;
       echo = 1;
       break;
     default:
-      end_pos = TCNT1;
+      end_pos = TCNT5;
       dist = end_pos - start_pos;
       //dist = 2;
       EIMSK &= ~0x01;
@@ -49,24 +49,24 @@ ISR(INT0_vect){
 void setup() {
 
   Serial.begin(9600);
-  // Timer/Counter1 설정, 주기적으로 pulse파를 생성하기 위함
+  // Timer/Counter5 설정, 주기적으로 pulse파를 생성하기 위함
   // Working Frequency 40Hz
   // Triger Input Signal 10us TTL pulse
   // Datasheet 137p~
-  // CTC Mode(Compare Match OCR5A) WGM13, WGM12, WGM11, WGM10 0100
-  TCCR1A &= ~(1<<WGM10);
-  TCCR1A &= ~(1<<WGM11);
-  TCCR1B |= (1<<WGM12);
-  TCCR1B &= ~(1<<WGM13);
+  // CTC Mode(Compare Match OCR5A) WGM53, WGM52, WGM51, WGM50 0100
+  TCCR5A &= ~(1<<WGM50);
+  TCCR5A &= ~(1<<WGM51);
+  TCCR5B |= (1<<WGM52);
+  TCCR5B &= ~(1<<WGM53);
   // COM1A1, COM1A0: 01 -> Toggle
-  TCCR1A &= ~(1<<COM1A1);
-  TCCR1A |= (1<<COM1A0);
+  TCCR5A &= ~(1<<COM5A1);
+  TCCR5A |= (1<<COM5A0);
   // 256 prescaling CS12, CS11, CS10 100
-  TCCR1B |= (1<<CS12);
-  TCCR1B &= ~((1<<CS10) | (1<<CS11));
-  TCNT1 = 0;
-  OCR1A = 3124;   // 16e6/256/(1+3124)=50ms=20Hz
-  TIMSK1 = (1<<OCIE1A);
+  TCCR5B |= (1<<CS52);
+  TCCR5B &= ~((1<<CS50) | (1<<CS51));
+  TCNT5 = 0;
+  OCR5A = 3124;   // 16e6/256/(1+3124)=50ms=20Hz
+  TIMSK5 = (1<<OCIE5A);
 
   // External Interrupt 0 설정, echo파를 받기 위함
   // Datasheet 77p~
