@@ -12,7 +12,7 @@ conda activate [환경 이름]
 ```
 - 가상환경 나오기
 ```
-conda activate [환경 이름]
+conda deactivate 
 ```
 ## 3. 모듈 설치
 ### 가상환경에 설치하는 것을 권장합니다
